@@ -31,18 +31,19 @@ describe 'jenkins::slave' do
       let(:params) { {:enable => false, :ensure => 'stopped' } }
       it { should contain_service('jenkins-slave').with(:enable => false, :ensure => 'stopped') }
     end
+
+    describe 'with slave_name' do
+      let(:params) { { :slave_name => 'jenkins-slave' } }
+      it { should contain_file(slave_runtime_file).with_content(/^CLIENT_NAME=jenkins-slave$/) }
+      it { should contain_file(slave_runtime_file).with_content(/ -name \$CLIENT_NAME /) }
+    end
   end
 
   describe 'RedHat' do
     let(:facts) { { :osfamily => 'RedHat', :operatingsystem => 'CentOS' } }
-    let(:slave_runtime_file) { '/etc/init.d/jenkins-slave' }
+    let(:slave_runtime_file) { '/etc/sysconfig/jenkins-slave' }
 
     it_behaves_like 'a jenkins::slave catalog'
-
-    describe 'with slave_name' do
-      let(:params) { { :slave_name => 'jenkins-slave' } }
-      it { should contain_file(slave_runtime_file).with_content(/ -name jenkins-slave /) }
-    end
   end
 
   describe 'Debian' do
@@ -50,12 +51,6 @@ describe 'jenkins::slave' do
     let(:slave_runtime_file) { '/etc/default/jenkins-slave' }
 
     it_behaves_like 'a jenkins::slave catalog'
-
-    describe 'with slave_name' do
-      let(:params) { { :slave_name => 'jenkins-slave' } }
-      it { should contain_file(slave_runtime_file).with_content(/^CLIENT_NAME=jenkins-slave$/) }
-      it { should contain_file(slave_runtime_file).with_content(/ -name \$CLIENT_NAME /) }
-    end
   end
 
   describe 'Unknown' do
