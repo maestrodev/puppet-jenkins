@@ -50,28 +50,28 @@ CLIENT_NAME="<%= @slave_name -%>"
 FSROOT="<%= @slave_home -%>"
 
 # credentials
-JENKINS_USERNAME=<%= @ui_user -%>
-JENKINS_PASSWORD=<%= @ui_pass -%>
+JENKINS_USERNAME="<%= @ui_user -%>"
+JENKINS_PASSWORD="<%= @ui_pass -%>"
 
 OTHER_ARGS="<%= '-disableSslVerification' if @disable_ssl_verification -%>"
 
-if [ -z "$JENKINS_USERNAME" ]; then
+if [ -n "$JENKINS_USERNAME" ]; then
   CREDENTIALS_ARG="-username $JENKINS_USERNAME -password $JENKINS_PASSWORD"
 fi
 
-if [ -z "$CLIENT_NAME" ]; then
+if [ -n "$CLIENT_NAME" ]; then
   NAME_ARG="-name $CLIENT_NAME"
 fi
 
-if [ -z "$MASTER_URL" ]; then
+if [ -n "$MASTER_URL" ]; then
   MASTER_URL_ARG="-master $MASTER_URL"
 fi
 
-if [ -z "$LABELS" ]; then
+if [ -n "$LABELS" ]; then
   LABELS_ARG="-labels '$LABELS'"
 fi
 
-if [ -z "$FSROOT" ]; then
+if [ -n "$FSROOT" ]; then
   FSROOT_ARG="-fsroot '$FSROOT'"
 fi
 
