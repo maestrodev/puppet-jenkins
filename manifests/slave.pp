@@ -92,14 +92,6 @@ class jenkins::slave (
     }
   }
 
-  #If disable_ssl_verification is set to true
-  if $disable_ssl_verification {
-      #disable SSL verification to the init script
-      $disable_ssl_verification_flag = '-disableSslVerification'
-  } else {
-      $disable_ssl_verification_flag = ''
-  }
-
   #add jenkins slave user if necessary.
   if $manage_slave_user and $slave_uid {
     user { 'jenkins-slave_user':
@@ -129,33 +121,6 @@ class jenkins::slave (
     #refreshonly => true,
     creates      => "${slave_home}/${client_jar}",
     ## needs to be fixed if you create another version..
-  }
-
-  if $ui_user {
-    $ui_user_flag = "-username ${ui_user}"
-  }
-  else {$ui_user_flag = ''}
-
-  if $ui_pass {
-    $ui_pass_flag = "-password ${ui_pass}"
-  } else {
-    $ui_pass_flag = ''
-  }
-
-  if $masterurl {
-    $masterurl_flag = "-master ${masterurl}"
-  } else {
-    $masterurl_flag = ''
-  }
-
-  if $labels {
-    $labels_flag = "-labels \'${labels}\'"
-  } else {
-    $labels_flag = ''
-  }
-
-  if $slave_home {
-    $fsroot_flag = "-fsroot ${slave_home}"
   }
 
   # customizations based on the OS family

@@ -40,11 +40,39 @@ JENKINS_SLAVE_MODE=<%= @slave_mode -%>
 #   descriptors are forced to 1024 regardless of /etc/security/limits.conf
 MAXOPENFILES=8192
 
-MASTER_URL="<%= @masterurl_flag -%> <%= @labels_flag -%>"
+MASTER_URL="<%= @masterurl -%>"
+LABELS="<%= @labels -%>"
 
 EXECUTORS=<%= @executors -%>
 
-<%= "CLIENT_NAME=#{@slave_name}" if @slave_name -%>
+CLIENT_NAME="<%= @slave_name -%>"
 
+FSROOT="<%= @slave_home -%>"
 
-JENKINS_SLAVE_ARGS="<%= @ui_user_flag -%> <%= @ui_pass_flag -%> -mode $JENKINS_SLAVE_MODE<%= " -name $CLIENT_NAME" if @slave_name -%> <%= @disable_ssl_verification_flag -%> -executors $EXECUTORS -master $MASTER_URL <%= @fsroot_flag -%>"
+# credentials
+JENKINS_USERNAME=<%= @ui_user -%>
+JENKINS_PASSWORD=<%= @ui_pass -%>
+
+OTHER_ARGS="<%= '-disableSslVerification' if @disable_ssl_verification -%>"
+
+if [ -z "$JENKINS_USERNAME" ]; then
+  CREDENTIALS_ARG="-username $JENKINS_USERNAME -password $JENKINS_PASSWORD"
+fi
+
+if [ -z "$CLIENT_NAME" ]; then
+  NAME_ARG="-name $CLIENT_NAME"
+fi
+
+if [ -z "$MASTER_URL" ]; then
+  MASTER_URL_ARG="-master $MASTER_URL"
+fi
+
+if [ -z "$LABELS" ]; then
+  LABELS_ARG="-labels '$LABELS'"
+fi
+
+if [ -z "$FSROOT" ]; then
+  FSROOT_ARG="-fsroot '$FSROOT'"
+fi
+
+JENKINS_SLAVE_ARGS="-mode $JENKINS_SLAVE_MODE -executors $EXECUTORS $CREDENTIALS_ARG $NAME_ARG $MASTER_URL_ARG $LABELS_ARG $FSROOT_ARG $OTHER_ARGS"
